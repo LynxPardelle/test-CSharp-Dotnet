@@ -1,0 +1,42 @@
+CREATE TABLE Roles(
+	IdRole BIGINT IDENTITY(1, 1) PRIMARY KEY,
+	Role VARCHAR(200) NOT NULL,
+	CreatedAt SMALLDATETIME NOT NULL DEFAULT(GETDATE()),
+	UpdatedAt SMALLDATETIME NULL
+)
+
+CREATE TABLE Users(
+	IdUsr BIGINT IDENTITY(1, 1) PRIMARY KEY,
+	Name VARCHAR(200) NOT NULL,
+	IdRole BIGINT NOT NULL FOREIGN KEY REFERENCES Roles(IdRole),
+	CreatedAt SMALLDATETIME NOT NULL DEFAULT(GETDATE()),
+	UpdatedAt SMALLDATETIME NULL,	
+)
+
+INSERT INTO ROLES(Role) VALUES
+('ADMIN'),
+('PUBLIC')
+
+INSERT INTO Users(IdRole, Name) VALUES
+(1, 'ALEC'),
+(2, 'ALDO')
+
+GO
+
+ALTER PROCEDURE [sp_Users](
+	@_IdUsr VARCHAR(2) = ''
+) AS BEGIN
+	
+	/*
+		Store hecho por Michelle García <3
+		EXEC [sp_Users]
+		EXEC [sp_Users] 2
+	*/
+
+	SET NOCOUNT ON;
+
+	SELECT U.IdUsr, U.Name, R.Role, U.CreatedAt FROM Users AS U
+	LEFT JOIN Roles AS R ON R.IdRole = U.IdRole
+	WHERE @_IdUsr IN (U.IdUsr, '')
+END
+
